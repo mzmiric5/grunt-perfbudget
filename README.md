@@ -67,6 +67,42 @@ Default value: NONE
 
 The API Key for the public instance of WPT. *Not needed if using a private instance of webpagetest*
 
+#### options.pushResult
+
+Type `Boolean`
+Default value: FALSE
+
+Determines if the results of perf test should be pushed to a remote url
+
+#### options.pushURL
+
+Type `String`
+Default value: NONE
+
+The URL to push the results of perf test to
+
+If pushResult is true, this value must be set
+
+#### options.pushKey
+
+Type `String`
+Default value: NONE
+
+The API key used to authenticate the push to the remote url
+
+If pushResult is true, this value must be set
+
+#### options.pushMethod
+
+Type `Function`
+Defualt value: `function (url, key, data, cb) { return null }`
+
+The function used to process data and push it to the the remote url
+
+The function signature must take 4 parameters, the push url, the api key, the data to send and the callback that it should run after pushing the data to the remote url
+
+If pushResult is true, this value must be set
+
 #### options.location
 
 Type `String`

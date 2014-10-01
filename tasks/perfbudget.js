@@ -18,6 +18,10 @@ module.exports = function(grunt) {
     var options = this.options({
       url: '',
       key: '',
+      pushResult: false,
+      pushURL: '',
+      pushKey: '',
+      pushMethod: function (url, key, data, cb) { return null },
       location: "Dulles:Chrome",
       wptInstance: "www.webpagetest.org",
       connectivity: '',
@@ -58,22 +62,28 @@ module.exports = function(grunt) {
           summary = data.data.summary,
           median = options.repeatView ? data.data.median.repeatView : data.data.median.firstView,
           pass = true,
-          str = "";
+          str = "",
+          optionStatus = [];
 
       for (var item in budget) {
         // make sure this is objects own property and not inherited
         if (budget.hasOwnProperty(item)) {
           //make sure it exists
           if (budget[item] !== '' && median.hasOwnProperty(item)) {
+            console.log(item);
             if (median[item] > budget[item]) {
               pass = false;
+              optionStatus[item] = 'warning';
               str += item + ': ' + median[item] + ' [FAIL]. Budget is ' + budget[item] + '\n';
             } else {
               str += item + ': ' + median[item] + ' [PASS]. Budget is ' + budget[item] + '\n';
+              optionStatus[item] = 'ok';
             }
           }
         }
       }
+
+      median['statusData'] = optionStatus;
 
       //
       //output our header and results
@@ -83,14 +93,26 @@ module.exports = function(grunt) {
             '\n-----------------------------------------------\n\n');
         grunt.log.error(str);
         grunt.log.error('Summary: ' + summary);
-        done(false);
+        if (pushResult) {
+          pushMethod(pushURL, pushKey, median, function () {
+            done(false);
+          });
+        } else {
+          done(false);
+        }
       } else {
         grunt.log.ok('\n\n-----------------------------------------------' +
               '\nTest for ' + options.url + ' \t  PASSED' +
             '\n-----------------------------------------------\n\n');
         grunt.log.ok(str);
         grunt.log.ok('Summary: ' + summary);
-        done();
+        if (pushResult) {
+          pushMethod(pushURL, pushKey, median, function () {
+            done();
+          });
+        } else {
+          done();
+        }
       }
 
       
