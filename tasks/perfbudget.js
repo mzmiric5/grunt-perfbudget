@@ -93,8 +93,8 @@ module.exports = function(grunt) {
             '\n-----------------------------------------------\n\n');
         grunt.log.error(str);
         grunt.log.error('Summary: ' + summary);
-        if (pushResult) {
-          pushMethod(pushURL, pushKey, median, function () {
+        if (options.pushResult) {
+          options.pushMethod(options.pushURL, options.pushKey, median, function () {
             done(false);
           });
         } else {
@@ -106,8 +106,8 @@ module.exports = function(grunt) {
             '\n-----------------------------------------------\n\n');
         grunt.log.ok(str);
         grunt.log.ok('Summary: ' + summary);
-        if (pushResult) {
-          pushMethod(pushURL, pushKey, median, function () {
+        if (options.pushResult) {
+          options.pushMethod(options.pushURL, options.pushKey, median, function () {
             done();
           });
         } else {
